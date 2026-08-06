@@ -8,10 +8,11 @@ import workoutsRouter from './routes/workouts';
 
 const app = express();
 const port = Number(process.env.PORT || 8000);
+const host = '0.0.0.0';
 const codespaceName = process.env.CODESPACE_NAME;
-const apiHost = codespaceName
-  ? `${codespaceName}-8000.githubpreview.dev`
-  : `localhost:${port}`;
+const apiBaseUrl = codespaceName
+  ? `https://${codespaceName}-8000.app.github.dev`
+  : `http://localhost:${port}`;
 
 app.use(json());
 app.use('/api/users', usersRouter);
@@ -24,11 +25,12 @@ app.get('/api/health', (_, res) => {
   res.json({
     status: 'ok',
     port,
-    apiHost,
+    host,
+    apiBaseUrl,
     mongodb: 'mongodb://localhost:27017/octofit_db'
   });
 });
 
-app.listen(port, () => {
-  console.log(`Backend listening on http://${apiHost}`);
+app.listen(port, host, () => {
+  console.log(`Backend listening on ${apiBaseUrl}`);
 });
